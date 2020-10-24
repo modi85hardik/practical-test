@@ -1,0 +1,11 @@
+.seller-table {
+  margin-top: 35px;
+  &__container {
+    flex: 1 1 auto;
+  }
+  .table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+    border-top: hidden;
+  }
+}
