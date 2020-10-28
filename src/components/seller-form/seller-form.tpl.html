@@ -8,35 +8,41 @@
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Seller Name*</label>  
             <div class="col-sm-6">
-                <input ref="sellerName" name="sellerName" required type="text" class="form-control" id="sellerName" ng-model="$ctrl.seller.sellerName"/>
+                <input ref="sellerName" name="sellerName" ng-pattern="/^[a-zA-Z0-9]+$/" required type="text" class="form-control" id="sellerName" ng-model="$ctrl.seller.sellerName" ng-maxlength="20"/>
                 <div ng-show="sellerForm.$submitted || sellerForm.sellerName.$touched">
-                  <div ng-show="sellerForm.sellerName.$error.required" class="seller-form__error">Enter the seller name.</div>
+                  <div ng-show="sellerForm.sellerName.$error.required" class="seller-form error">Enter the seller name.</div>
+                  <div ng-show="sellerForm.sellerName.$error.pattern" class="seller-form error">Enter the valid seller name.</div>
+                  <div ng-show="sellerForm.sellerName.$error.maxlength" class="seller-form error">You can enter max 20 characters.</div>
                 </div>
             </div>
         </div>
-          {{ $ctrl.example14model }}
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Currencies*</label>  
             <div class="col-sm-6">
-                <select id="currencies" class="form-control multiselect"
-                  ng-options="currency.value for currency in $ctrl.currencyList track by currency.key"
+                <!-- <select id="currencies" class="form-control multiselect"
+                  ng-options="currency.label for currency in $ctrl.currencyList track by currency.key"
                   name="currencies" ng-model="$ctrl.seller.currencies" multiple="multiple" multi-select>
-                </select>
+                </select> -->
+                <div ng-dropdown-multiselect="" extra-settings="$ctrl.multipleDropdownSetting" options="$ctrl.currencyList" selected-model="$ctrl.seller.currencies"></div>
                 <div ng-show="sellerForm.$submitted || sellerForm.office.$touched">
-                  <div ng-show="$ctrl.isMultiSelected($ctrl.seller.currencies)" class="seller-form__error">Please select currency.</div>
+                  <div ng-show="$ctrl.isMultiSelected($ctrl.seller.currencies)" class="seller-form error">Please select currency.</div>
                 </div>
             </div>
+          <!-- {{$ctrl.seller.currencies}} -->
+            
+        
         </div>
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Offices*</label>
             <div class="col-sm-6">
-                <select id="offices" class="form-control multiselect"
+                <!-- <select id="offices" class="form-control multiselect"
                   ng-options="office.name for office in $ctrl.offices track by office.id"
                   name="office" ng-model="$ctrl.seller.office" multiple="multiple" multi-select>
                   <option value="office.id"></option>
-                </select>
+                </select> -->
+                <div ng-dropdown-multiselect="" extra-settings="$ctrl.multipleDropdownSetting" options="$ctrl.offices" selected-model="$ctrl.seller.office"></div>
                 <div ng-show="sellerForm.$submitted || sellerForm.office.$touched">
-                  <div ng-show="$ctrl.isMultiSelected($ctrl.seller.office)" class="seller-form__error">Please select office.</div>
+                  <div ng-show="$ctrl.isMultiSelected($ctrl.seller.office)" class="seller-form error">Please select office.</div>
                 </div>
             </div>
         </div>
@@ -56,30 +62,33 @@
                   </label>
                 </div>
                 <div ng-show="sellerForm.$submitted || sellerForm.dealTypeGuaranteed.$touched || sellerForm.dealTypeBided.$touched">
-                  <div ng-show="!$ctrl.seller.dealTypeBided && !$ctrl.seller.dealTypeGuaranteed" class="seller-form__error">Select any deal type.</div>
+                  <div ng-show="!$ctrl.seller.dealTypeBided && !$ctrl.seller.dealTypeGuaranteed" class="seller-form error">Select any deal type.</div>
                 </div>
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Contact Name</label>
             <div class="col-sm-6">
-                <input ref="contactName" type="text" class="form-control" id="contactName" ng-model="$ctrl.seller.contactName"/>
+                <input ref="contactName" type="text" class="form-control" name="contactName" id="contactName" ng-model="$ctrl.seller.contactName" ng-maxlength="20"/>
+                <div ng-show="sellerForm.$submitted || sellerForm.contactName.$touched">
+                  <span ng-show="sellerForm.contactName.$error.maxlength" class="seller-form error">You can enter max 20 characters.</span>
+                </div>
             </div>
         </div>
         <div class="form-group row">
           <label class="col-sm-2 col-form-label">Email</label>
           <div class="col-sm-6">
-              <input ref="email" type="email" name="email" class="form-control" id="email" ng-model="$ctrl.seller.email"/>
+              <input ref="email" type="email" name="email" class="form-control" id="email" ng-model="$ctrl.seller.email" ng-pattern="/^[a-z]+[a-z0-9._]+@[a-z]+\.[a-z.]{2,5}$/"/>
               <div ng-show="sellerForm.$submitted || sellerForm.email.$touched">
-                <span ng-show="sellerForm.email.$error.email" class="seller-form__error">Enter the valid email address</span>
+                <span ng-show="sellerForm.email.$error.pattern" class="seller-form error">Enter the valid email address</span>
               </div>
           </div>
         </div>
         <div class="form-group offset-sm-6">
           <input type="button" class="btn btn-default" ng-click="$ctrl.clear(sellerForm)"  value="Cancel"/>
-            <input type="submit" ng-disabled="sellerForm.$invalid" ng-click="$ctrl.submit(sellerForm)" class="btn btn-primary" value="Save"/>
+            <input type="button" ng-disabled="sellerForm.$invalid"  ng-click="$ctrl.submit(sellerForm)" class="btn btn-primary" value="Save"/>
             <div ng-show="sellerForm.$submitted">
-              <span ng-show="!(!$ctrl.FormValidation() && !sellerForm.$invalid)" class="seller-form__error">Please fill in the required fields.</span>
+              <span ng-show="!(!$ctrl.FormValidation() && !sellerForm.$invalid)" class="seller-form error">Please fill in the required fields.</span>
             </div>
         </div>
     </form>

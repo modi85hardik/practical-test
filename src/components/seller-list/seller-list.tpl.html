@@ -2,9 +2,9 @@
   <div class="col-sm-4">
     <h4>{{ $ctrl.name }}</h4>
   </div>
-  <div class="seller-table__container">
+  <div class="seller-table container">
     <div class="panel">
-      <div class="container">
+      <div class="container table-wrapper-scroll-y my-custom-scrollbar">
         <table class="table seller-table">
           <thead>
             <tr>
@@ -13,22 +13,22 @@
               <th scope="col">Office</th>
               <th scope="col">Bidded Deals</th>
               <th scope="col">Guranteed Deals</th>
-              <!-- <th scope="col">Contact Name</th>
-              <th scope="col">Email</th> -->
+              <th scope="col">Contact Name</th>
+              <th scope="col">Email</th>
               <th scope="col"></th>
-              <th scope="col"></th>
+              <!-- <th scope="col"></th> -->
             </tr>
           </thead>
           <tbody>
             <tr ng-repeat="seller in $ctrl.sellerList track by $index">
               <th scope="row">{{ seller.sellerName }}</th>
-              <td>{{ $ctrl.fetchValue(seller.currencies, 'value') }}</td>
-              <td>{{ $ctrl.fetchValue(seller.office, 'name') }}</td>
+              <td>{{ $ctrl.fetchValue(seller.currencies, 'label') }}</td>
+              <td>{{ $ctrl.fetchValue(seller.office, 'label') }}</td>
               <td>{{ $ctrl.filterForYesNo(seller.dealTypeBided) }}</td>
               <td>{{ $ctrl.filterForYesNo(seller.dealTypeGuaranteed)}}</td>
-              <!-- <td>{{seller.contactName}}</td>
-              <td>{{seller.email}}</td> -->
-              <td class="seller-table__icon">
+              <td>{{seller.contactName}}</td>
+              <td>{{seller.email}}</td>
+              <td class="seller-table_icon">
                 <button class="btn btn-light" data-toggle="modal" data-target="#exampleModal"
                 ng-click="$ctrl.removeSeller(seller)"><i class="fa fa-trash-o"></i></button>
                 <button class="btn btn-light" ng-click="$ctrl.editSeller(seller)"><i class="fa fa-pencil"></i></button>
@@ -38,7 +38,7 @@
         </table>
       </div>
     </div>
-    <!-- Modal -->
+    <!-- Modal Delete confirmation-->
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">

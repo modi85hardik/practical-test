@@ -13,6 +13,8 @@ angular
     homeView,
     'ui.router',
     'LocalStorageModule',
+    'angularjs-dropdown-multiselect',
+    'toaster'
   ])
   .constant('Constants', constants)
   .config(appRoutes)

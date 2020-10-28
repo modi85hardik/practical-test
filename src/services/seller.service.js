@@ -3,17 +3,8 @@ export default {
   factory: ['localStorageService', (localStorageService) => {
     let uid = 1;
     // Set the initial value of table 
-    let sellerList = [{
-      id: 1,
-      sellerName: 'John',
-      currencies: [{key: 'us', value:'USD'},{key: 'uk', value:'GBP'}],
-      office: [{id: 1, name: 'CA'}],
-      dealTypeBided: true,
-      dealTypeGuaranteed: false,
-      contactName: 'Hardik',
-      email: 'hardik@gmail.com',
-    }];
-    
+    let sellerList = [];
+
     // Save the seller data
     const save = (seller) => {
       if(!seller.id) {
@@ -24,8 +15,8 @@ export default {
       } else {
         sellerList = sellerList.filter((item) => item.id != seller.id);
         sellerList.push(seller);
+        localStorageService.set('sellers', sellerList);
       }
-      console.log(sellerList);
     };
 
     // Get the seller data using specific id
@@ -36,6 +27,7 @@ export default {
 
     // Get all list of seller
     const list = () => {
+      sellerList = localStorageService.get('sellers');
       return sellerList;
     };
 
@@ -45,7 +37,8 @@ export default {
       const index = sellerList.indexOf(matchedSeller);
       if (index > -1) {
         sellerList.splice(index, 1);
-      }   
+      }
+      localStorageService.set('sellers', sellerList);
     };
     
     // Export the each method of services

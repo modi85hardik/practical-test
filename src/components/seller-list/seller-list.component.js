@@ -8,7 +8,7 @@ export default angular
   .factory(sellerService.name, sellerService.factory)
   .component('sellerList', {
     template,
-    controller: ['sellerService','$rootScope', '$scope', 'Constants', function (sellerService, $rootScope, $scope, Constants) {
+    controller: ['sellerService','$rootScope', '$scope', 'Constants', 'toaster', function (sellerService, $rootScope, $scope, Constants, toaster) {
       // Header name
       this.name = 'Seller List';
       this.selectedSeller = null;
@@ -26,6 +26,7 @@ export default angular
         sellerService.remove(this.selectedSeller.id);
         this.sellerList = sellerService.list();
         this.selectedSeller = null;
+        toaster.pop('success', "Seller Deleted", "Seller deleted successfully");
       }
 
       // save the form

@@ -79,10 +79,8 @@ const prodConfig = {
 
 module.exports = env => {
   if (env && (env.production || (env.NODE_ENV && env.NODE_ENV.indexOf('prod') > -1))) {
-    console.log('Using production config');
     return merge(commonConfig, prodConfig);
   } else {
-    console.log('Using development config');
     return merge(commonConfig, devConfig);
   }
 }

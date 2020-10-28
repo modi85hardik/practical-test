@@ -1,6 +1,7 @@
 .seller-table {
   margin-top: 35px;
-  &__container {
+  table-layout: fixed;
+  &.container {
     flex: 1 1 auto;
   }
   .table thead th {
@@ -8,4 +9,17 @@
     border-bottom: 2px solid #dee2e6;
     border-top: hidden;
   }
+  .table tbody tr td {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+}
+
+.my-custom-scrollbar {
+  position: relative;
+  height: 200px;
+  overflow: auto;
+}
+.table-wrapper-scroll-y {
+  display: block;
 }
