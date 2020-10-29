@@ -4,12 +4,15 @@ export default {
     let uid = 1;
     // Set the initial value of table 
     let sellerList = [];
+    localStorageService.set('sellers', sellerList);
 
     // Save the seller data
     const save = (seller) => {
       if(!seller.id) {
         uid = uid + 1;
         seller.id = uid;
+        console.log('sellerList', sellerList);
+        console.log('seller', seller);
         sellerList.push(seller);
         localStorageService.set('sellers', sellerList);
       } else {
