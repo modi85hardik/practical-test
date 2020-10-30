@@ -8,7 +8,7 @@
 .checkbox-container {
   display: block;
   position: relative;
-  padding-left: 35px;
+  padding-left: 35px !important;
   margin-bottom: 12px;
   cursor: pointer;
   font-size: 15px;
@@ -69,16 +69,4 @@
   line-height: 1.428571429;
   color: #333;
   white-space: nowrap;
-}
-
-.glyphicon {
-  position: relative;
-  top: 1px;
-  display: inline-block;
-  font-family: Glyphicons Halflings;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }

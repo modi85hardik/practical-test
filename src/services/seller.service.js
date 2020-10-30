@@ -2,9 +2,14 @@ export default {
   name: 'sellerService',
   factory: ['localStorageService', (localStorageService) => {
     let uid = 1;
+
+    const setInitialStorage = () => {
+
+      localStorageService.get('sellers') ? (localStorageService.get('sellers').length === 0 ? localStorageService.set('sellers', []) : '' ) : localStorageService.set('sellers', []);
+    }
+
     // Set the initial value of table 
-    let sellerList = [];
-    localStorageService.set('sellers', sellerList);
+    let sellerList = localStorageService.get('sellers');
 
     // Save the seller data
     const save = (seller) => {
@@ -12,7 +17,7 @@ export default {
         uid = uid + 1;
         seller.id = uid;
         console.log('sellerList', sellerList);
-        console.log('seller', seller);
+
         sellerList.push(seller);
         localStorageService.set('sellers', sellerList);
       } else {
@@ -50,6 +55,7 @@ export default {
       get,
       remove,
       list,
+      setInitialStorage,
     };
   }]
 }

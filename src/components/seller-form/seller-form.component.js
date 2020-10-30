@@ -3,9 +3,6 @@ import template from './seller-form.tpl.html';
 import './seller-form.scss';
 import sellerService from '../../services/seller.service';
 
-
-
-
 export default angular
   .module('sellerForm.component', [])
   .factory(sellerService.name, sellerService.factory)
@@ -14,6 +11,7 @@ export default angular
     controller: ['sellerService', '$scope', '$rootScope', 'Constants' ,'toaster', function (sellerService, $scope, $rootScope, Constants, toaster) {
       this.currencyList = Constants.currencyList;
       this.offices = Constants.offices;
+
       // Bind object in the form
       this.seller = {
         sellerName: '',
@@ -25,14 +23,55 @@ export default angular
         email: '',
         id: 0
       }
-
       
       // Header name
       this.name = 'Seller Form';
+      let that = this;
 
-      // Setting for the multiple dropdown
-      this.multipleDropdownSetting = {checkBoxes: true, enableSearch: true, showCheckAll: false, showUncheckAll: false}
+      // Setting for the multiselect dropdown
+      this.multipleDropdownSetting = {
+        checkBoxes: true, 
+        enableSearch: true, 
+        scrollableHeight: '310px', 
+        scrollable: true,
+        smartButtonMaxItems: Constants.currencyList.length,
+        smartButtonTextConverter: function (text) {
+          return text;
+        },
+      }
+
+      // Text setting for multiselect dropdown
+      this.multipleDropdownText = {checkAll: "Select All", uncheckAll:"Unselect All"}
+
+      // Events handeling for currency dropdown
+      this.multiDropdownEventsCurrency = {
+        onItemSelect: function() {
+         that.countCurrency += 1
+        },
+        onItemDeselect: function() {
+          that.countCurrency -= 1;
+        }
+      }
       
+      // Events handeling for office dropdown
+      this.multiDropdownEventsOffice = {
+        onItemSelect: function() {
+          that.countOffice += 1;
+        },
+        onItemDeselect: function() {
+          that.countOffice -= 1;
+        }
+      }
+
+      // Set the local storage on initial page load
+      this.$onInit = function() {
+        sellerService.setInitialStorage();
+        this.isFormSubmitted = false;
+        this.countCurrency = 0;
+        this.countOffice = 0;
+      }
+
+
       // Clear the form
       this.clear = function(form) {
         form.$setPristine();
@@ -65,31 +104,25 @@ export default angular
       this.FormValidation = function() {
         if (!this.seller.dealTypeBided && !this.seller.dealTypeGuaranteed) {
           return true;
-        } else if (this.isMultiSelected(this.seller.office)) {
+        } else if (this.seller.currencies.length === 0) {
+          this.isFormSubmitted = true;
           return true;
-        } else if (this.isMultiSelected(this.seller.currencies)) {
+        } else if (this.seller.office.length === 0) {
+          this.isFormSubmitted = true;
           return true;
         } else {
           return false;
         }
       }
 
-      // Utility to check more than one element in list or not 
-      this.isMultiSelected = function(list) {
-        if (list && list.length) {
-          return false;
-        }
-        return true;
-      }
-
       // Utility to get the index of matched values from an array based on label key.
       Array.prototype.multiIndexOf = function (el) { 
-        var idxs = '';
-        for (var i = this.length - 1; i >= 0; i--) {
-            if (this[i].label === el) {
-                idxs = i;
-            }
-        }
+        let idxs = '';
+        angular.forEach(this, function(value, key) {
+          if (value.label === el) {
+            idxs = key;
+          }
+        });
         return idxs;
     };
 
@@ -97,17 +130,21 @@ export default angular
 
       // Handler for get the sellerId on click of edit btn 
       $scope.$on(Constants.eventNames.UPDATE_SELLER_INFO, function (event, sellerId) {
+        
         const matchedSeller = sellerService.get(sellerId);
-        for(let i = 0 ; i < matchedSeller.currencies.length ; i++) {
+        that.countCurrency = matchedSeller.currencies.length;
+        that.countOffice = matchedSeller.office.length;
+        angular.forEach(matchedSeller.currencies, function(value) {
           event.currentScope.$ctrl.seller.currencies.push(
-            Constants.currencyList[Constants.currencyList.multiIndexOf(matchedSeller.currencies[i].label)]
+            Constants.currencyList[Constants.currencyList.multiIndexOf(value.label)]
           );
-        }
-        for(let i = 0 ; i < matchedSeller.office.length ; i++) {
+        });
+
+        angular.forEach(matchedSeller.office, function(value) {
           event.currentScope.$ctrl.seller.office.push(
-            Constants.offices[Constants.offices.multiIndexOf(matchedSeller.office[i].label)]
+            Constants.offices[Constants.offices.multiIndexOf(value.label)]
           );
-        }
+        });
         event.currentScope.$ctrl.seller.sellerName = sellerService.get(sellerId).sellerName;
         event.currentScope.$ctrl.seller.dealTypeBided = sellerService.get(sellerId).dealTypeBided;
         event.currentScope.$ctrl.seller.dealTypeGuaranteed = sellerService.get(sellerId).dealTypeGuaranteed;
@@ -117,7 +154,6 @@ export default angular
 
         // event.currentScope.$ctrl.seller = angular.copy(sellerService.get(sellerId));
       });
-
     }],
   })
   .name;
