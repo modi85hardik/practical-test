@@ -9,7 +9,7 @@
             <label class="col-sm-2 col-form-label">Seller Name*</label>  
             <div class="col-sm-6">
                 <input ref="sellerName" name="sellerName" ng-pattern="/^[a-zA-Z0-9 ]+$/" required type="text" class="form-control" id="sellerName" ng-model="$ctrl.seller.sellerName" ng-maxlength="20"/>
-                <div ng-show="sellerForm.$submitted || sellerForm.sellerName.$touched">
+                <div ng-show="$ctrl.isFormSubmitted || sellerForm.sellerName.$touched">
                   <div ng-show="sellerForm.sellerName.$error.required" class="seller-form error">Enter the seller name.</div>
                   <div ng-show="sellerForm.sellerName.$error.pattern" class="seller-form error">Enter the valid seller name.</div>
                   <div ng-show="sellerForm.sellerName.$error.maxlength" class="seller-form error">You can enter max 20 characters.</div>
@@ -71,10 +71,9 @@
         <div class="form-group offset-sm-6">
           <input type="button" class="btn btn-default mr-1" ng-click="$ctrl.clear(sellerForm)"  value="Cancel"/>
             <input type="button"  ng-click="$ctrl.submit(sellerForm)" class="btn btn-primary" value="Save"/>
-            <div ng-show="sellerForm.$submitted">
-            </div>
         </div>
     </form>
     <!-- Form End -->
   </div>
+  <seller-list selected-seller="$ctrl.selectedSeller(seller)" seller-list="$ctrl.sellerList" ></seller-list>
 </div>

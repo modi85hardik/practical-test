@@ -8,7 +8,11 @@ export default angular
   .factory(sellerService.name, sellerService.factory)
   .component('sellerList', {
     template,
-    controller: ['sellerService','$rootScope', '$scope', 'Constants', 'toaster', function (sellerService, $rootScope, $scope, Constants, toaster) {
+    bindings: {
+      selectedSeller: '&',
+      sellerList: '='
+    },
+    controller: ['sellerService', 'toaster', function (sellerService, toaster) {
       // Header name
       this.name = 'Seller List';
       this.selectedSeller = null;
@@ -31,7 +35,7 @@ export default angular
 
       // save the form
       this.editSeller = function(sellerDetail) {
-        $rootScope.$broadcast(Constants.eventNames.UPDATE_SELLER_INFO, sellerDetail.id);
+        this.selectedSeller({seller:angular.copy(sellerDetail)});
       }
 
       // Fetch value from the list
@@ -41,11 +45,6 @@ export default angular
         }
         return [];
       }
-
-      // Handler for the update the table list
-      $scope.$on(Constants.eventNames.UPDATE_SELLER_LIST, function (event) {
-        event.currentScope.$ctrl.sellerList = sellerService.list();
-      });
 
       // Convert boolean value into Yes/No into string
       this.filterForYesNo = function(arg) { return arg ? 'Yes' : 'No' };

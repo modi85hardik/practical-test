@@ -14,10 +14,8 @@ export default {
     // Save the seller data
     const save = (seller) => {
       if(!seller.id) {
-        uid = uid + 1;
+        uid = Math.floor((Math.random() * 10000) + 1);
         seller.id = uid;
-        console.log('sellerList', sellerList);
-
         sellerList.push(seller);
         localStorageService.set('sellers', sellerList);
       } else {

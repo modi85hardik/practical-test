@@ -8,7 +8,7 @@ export default angular
   .factory(sellerService.name, sellerService.factory)
   .component('sellerForm', {
     template,
-    controller: ['sellerService', '$scope', '$rootScope', 'Constants' ,'toaster', function (sellerService, $scope, $rootScope, Constants, toaster) {
+    controller: ['sellerService', 'Constants' ,'toaster', function (sellerService, Constants, toaster) {
       this.currencyList = Constants.currencyList;
       this.offices = Constants.offices;
 
@@ -27,6 +27,9 @@ export default angular
       // Header name
       this.name = 'Seller Form';
       let that = this;
+
+      // set Initial value of list
+      this.sellerList = sellerService.list();
 
       // Setting for the multiselect dropdown
       this.multipleDropdownSetting = {
@@ -50,6 +53,9 @@ export default angular
         },
         onItemDeselect: function() {
           that.countCurrency -= 1;
+        },
+        onDeselectAll: function() {
+          that.countCurrency = 0;
         }
       }
       
@@ -60,6 +66,9 @@ export default angular
         },
         onItemDeselect: function() {
           that.countOffice -= 1;
+        },
+        onDeselectAll: function() {
+          that.countOffice = 0;
         }
       }
 
@@ -89,29 +98,34 @@ export default angular
 
       // save the form
       this.submit = function(form) {
-        if(this.FormValidation()) {
+        let submittedForm = form;
+        if(this.FormValidation(submittedForm)) {
           return;
         } else {
           sellerService.save(this.seller);
           this.clear(form);
+          this.isFormSubmitted = false;
           // Publish message to update table list
-          $rootScope.$broadcast(Constants.eventNames.UPDATE_SELLER_LIST, true);
+          this.sellerList = sellerService.list();
           toaster.pop('success', "Seller Saved", "Seller saved successfully");
         }
       }
 
       // Check the custom validation for multiple selection check box
-      this.FormValidation = function() {
+      this.FormValidation = function(form) {
         if (!this.seller.dealTypeBided && !this.seller.dealTypeGuaranteed) {
           return true;
         } else if (this.seller.currencies.length === 0) {
           this.isFormSubmitted = true;
-          return true;
+          return true
         } else if (this.seller.office.length === 0) {
           this.isFormSubmitted = true;
-          return true;
+          return true
+        } else if(!form.$valid) {
+          this.isFormSubmitted = true;
+          return true
         } else {
-          return false;
+          return false
         }
       }
 
@@ -124,36 +138,29 @@ export default angular
           }
         });
         return idxs;
-    };
+      };
 
-
-
-      // Handler for get the sellerId on click of edit btn 
-      $scope.$on(Constants.eventNames.UPDATE_SELLER_INFO, function (event, sellerId) {
-        
-        const matchedSeller = sellerService.get(sellerId);
-        that.countCurrency = matchedSeller.currencies.length;
-        that.countOffice = matchedSeller.office.length;
-        angular.forEach(matchedSeller.currencies, function(value) {
-          event.currentScope.$ctrl.seller.currencies.push(
-            Constants.currencyList[Constants.currencyList.multiIndexOf(value.label)]
-          );
-        });
-
-        angular.forEach(matchedSeller.office, function(value) {
-          event.currentScope.$ctrl.seller.office.push(
-            Constants.offices[Constants.offices.multiIndexOf(value.label)]
-          );
-        });
-        event.currentScope.$ctrl.seller.sellerName = sellerService.get(sellerId).sellerName;
-        event.currentScope.$ctrl.seller.dealTypeBided = sellerService.get(sellerId).dealTypeBided;
-        event.currentScope.$ctrl.seller.dealTypeGuaranteed = sellerService.get(sellerId).dealTypeGuaranteed;
-        event.currentScope.$ctrl.seller.email = sellerService.get(sellerId).email;
-        event.currentScope.$ctrl.seller.contactName = sellerService.get(sellerId).contactName;
-        event.currentScope.$ctrl.seller.id = sellerService.get(sellerId).id;
-
-        // event.currentScope.$ctrl.seller = angular.copy(sellerService.get(sellerId));
+    // for sharing the data from list to form component using bindings
+    this.selectedSeller = function (seller) {
+      this.seller.sellerName = seller.sellerName;
+      this.seller.dealTypeBided = seller.dealTypeBided;
+      this.seller.dealTypeGuaranteed = seller.dealTypeGuaranteed;
+      this.seller.email = seller.email;
+      this.seller.contactName = seller.contactName;
+      this.seller.id = seller.id;
+      that.countCurrency = seller.currencies.length;
+      that.countOffice = seller.office.length;
+      angular.forEach(seller.currencies, function(value) {
+        that.seller.currencies.push(
+          Constants.currencyList[Constants.currencyList.multiIndexOf(value.label)]
+        );
       });
+      angular.forEach(seller.office, function(value) {
+        that.seller.office.push(
+          Constants.offices[Constants.offices.multiIndexOf(value.label)]
+        );
+      });
+    }
     }],
   })
   .name;
